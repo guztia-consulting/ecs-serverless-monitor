@@ -1,0 +1,24 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  MonitorFC:
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: 'Function Compute Service for the Monitor Page'
+      InternetAccess: true
+      Policies:
+        - AliyunCloudMonitorFullAccess
+    getStats:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: getStats.handler
+        Runtime: nodejs8
+        CodeUri: './fc/'
+        Timeout: 10
+        EnvironmentVariables:
+          token: TOKEN_HERE
+  MonitorAPI:
+    Type: 'Aliyun::Serverless::Api'
+    Properties:
+      StageName: RELEASE
+      DefinitionUri: swagger.yml

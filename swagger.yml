@@ -1,0 +1,26 @@
+'/getStats':
+  get:
+    x-aliyun-apigateway-request-config:
+      requestMode: 'MAPPING'
+      requestProtocol: 'http'
+    x-aliyun-apigateway-api-name: get_stats
+    x-aliyun-apigateway-fc:
+      arn: acs:fc:::services/${MonitorFC.Arn}/functions/${getStats.Arn}/
+      timeout: 16000
+    x-aliyun-apigateway-request-parameters:
+      - apiParameterName: 'token'
+        location: 'Query'
+        parameterType: 'String'
+        required: 'REQUIRED'
+      - apiParameterName: 'regionId'
+        location: 'Query'
+        parameterType: 'String'
+        required: 'REQUIRED'
+      - apiParameterName: 'instanceId'
+        location: 'Query'
+        parameterType: 'String'
+        required: 'REQUIRED'
+      - apiParameterName: 'time'
+        location: 'Query'
+        parameterType: 'String'
+        required: 'REQUIRED'

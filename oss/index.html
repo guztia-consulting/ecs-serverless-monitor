@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ECS Monitor</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #333;
+        }
+
+        main {
+            height: 100vh;
+        }
+
+        main section {
+            float: left;
+            width: 50%;
+            height: 50%;
+            padding: 5px;
+        }
+
+        .graph {
+            width: 100%;
+            height: 100%;
+            background: #f5f5f5;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <section>
+        <canvas id="cpu_usage" class="graph"></canvas>
+    </section>
+    <section>
+        <canvas id="memory_usage" class="graph"></canvas>
+    </section>
+    <section>
+        <canvas id="disk_usage" class="graph"></canvas>
+    </section>
+    <section>
+        <canvas class="graph"></canvas>
+    </section>
+</main>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+<script type="text/javascript">
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const instanceId = urlParams.get('instanceId');
+  const regionId = urlParams.get('regionId');
+  const token = 'TOKEN_HERE';
+
+  const apiBase = 'API_GOES_HERE';
+  const apiUrl = apiBase + '?token=' + token + '&regionId=' + regionId + '&instanceId=' + instanceId + '&time=3600';
+  const getStats = new XMLHttpRequest();
+
+  function generateChart (name, data, wrapper) {
+    const ctx = document.getElementById(wrapper).getContext('2d');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.timestamps,
+        datasets: [
+          {
+            label: name,
+            data: data.samples,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        aspectRatio: 2,
+        scales: {
+          xAxes: [
+            {
+              ticks: {
+                display: false,
+              },
+            },
+          ],
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+                min: 0,
+                max: 100,
+                stepSize: 25,
+              },
+            },
+          ],
+        },
+      },
+    });
+  }
+
+  getStats.open('GET', apiUrl, true);
+  getStats.onload = function () {
+    const response = JSON.parse(getStats.responseText);
+
+    generateChart('CPU', response.cpu, 'cpu_usage');
+    generateChart('Memory', response.memory, 'memory_usage');
+    generateChart('Disk', response.disk, 'disk_usage');
+  };
+
+  getStats.send();
+
+  setTimeout(function () {
+    location.reload();
+  }, 300000);
+</script>
+</body>
+</html>
