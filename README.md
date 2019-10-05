@@ -7,4 +7,5 @@ This examples assumes `ap-southeast-2` as region (Sydney).
 - Write your credentials to the `.env` file.
 - From the `template.yml` file, change the services names to more suitable names for you.
 - Install fun if you don't have it yet (`npm install @alicloud/fun -g`).
+- Go to `/fc` and run `npm install`.
 - Run `fun deploy` and wait to the process to finish.
